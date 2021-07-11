@@ -1,0 +1,40 @@
+##  Named of the workflow.
+name: DockerBuild
+
+## Set the trigger policy.
+## In this case, the workflow is execute on a `push` event,
+## or when a new commit is pushed to the repository
+on: [push]
+
+## List the steps to be executed by the workflow
+jobs:
+  ## Set the name of the job
+  build:
+    ## Configure the operating system the workflow should run on.
+    ## In this case, the job on Ubuntu. Additionally, set a the job
+    ## to execute on different Python versions 
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platforms: [linux/amd64,linux/arm64]
+    ## Define a sequence of steps to be executed
+    steps:
+    - name: do a docker-build for each platform
+      uses: docker/setup-buildx-action@v1
+      with:
+        platforms: ${{ matrix.platforms }}
+    - name: login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: user/app:latest
+        platforms: ${{ matrix.platforms }}
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
