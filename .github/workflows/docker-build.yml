@@ -14,15 +14,14 @@ jobs:
     ## In this case, the job on Ubuntu. Additionally, set a the job
     ## to execute on different Python versions 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platforms: [linux/amd64,linux/arm64]
     ## Define a sequence of steps to be executed
     steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: setup QEMU        
+      uses: docker/setup-qemu-action@v1    
     - name: do a docker-build for each platform
       uses: docker/setup-buildx-action@v1
-      with:
-        platforms: ${{ matrix.platforms }}
     - name: login to DockerHub
       uses: docker/login-action@v1
       with:
@@ -35,5 +34,6 @@ jobs:
         context: .
         push: true
         tags: user/app:latest
+        platforms: linux/amd64,linux/arm64
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
