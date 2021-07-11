@@ -33,7 +33,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: user/app:latest
+        tags: krishnakvinf/python-helloworld:latest
         platforms: linux/amd64,linux/arm64
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
