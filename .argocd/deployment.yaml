@@ -21,7 +21,7 @@ spec:
         app: python-helloworld
     spec:
       containers:
-      - image: krishnakvinf/python-helloworld:v0.0.1 
+      - image: krishnakvinf/python-helloworld:latest
         imagePullPolicy: IfNotPresent
         name: python-helloworld
         resources:
